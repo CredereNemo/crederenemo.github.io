@@ -10,10 +10,10 @@
         // Убираем старую кнопку, если она есть
         $('#REDIRECT').remove();
         
-        // Получаем список серверов
         var servers = Lampa.Storage.get('location_servers') || [];
         
-        if (!servers.length) return; // Если серверов нет, кнопку не создаем
+        // Если серверов нет, не создаем кнопку
+        if (!servers.length) return;
 
         // Создаем кнопку с иконкой
         var buttonHtml = '<div id="REDIRECT" class="head__action selector redirect-screen" style="display:block; padding:10px;">' + icon_server_redirect + '</div>';
