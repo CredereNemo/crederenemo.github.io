@@ -10,7 +10,7 @@
         $('#REDIRECT').remove();
         
         var servers = Lampa.Storage.get('location_servers') || [];
-        if (!servers.length) return; // Если нет серверов, кнопку не показываем
+        if (!servers.length) return; // Если серверов нет, кнопку не добавляем
 
         var buttonHtml = '<div id="REDIRECT" class="head__action selector redirect-screen">' + icon_server_redirect + '</div>';
         
@@ -68,7 +68,7 @@
         onChange: function (value) {
             var servers = value.split(',').map(s => s.trim()).filter(Boolean);
             Lampa.Storage.set('location_servers', servers);
-            startRedirectButton();
+            startRedirectButton(); // Пересоздаем кнопку после изменения списка серверов
         }
     });
     
