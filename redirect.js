@@ -22,12 +22,14 @@
         // Создаем кнопку, добавляем класс для стилей иконки
 var buttonHtml = `
     <div id="REDIRECT" class="head__action selector redirect-screen" 
-        style="width: 36px; height: 36px; display: flex; align-items: center; justify-content: center; background: red; 
-        border: 2px solid yellow;">
-        <svg width="24" height="24" viewBox="0 0 24 24" fill="black" xmlns="http://www.w3.org/2000/svg" style="display: block;">
+        style="width: 36px; height: 36px; display: flex; align-items: center; justify-content: center; 
+        background: red; border: 2px solid yellow; position: relative; top: 0;">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="black" xmlns="http://www.w3.org/2000/svg" 
+            style="display: block; width: 24px; height: 24px;">
             <path d="M13 21.75C13.4142 21.75 13.75 21.4142 13.75 21C13.75 20.5858 13.4142 20.25 13 20.25V21.75ZM3.17157 19.8284L3.7019 19.2981H3.7019L3.17157 19.8284ZM20.8284 4.17157L20.2981 4.7019V4.7019L20.8284 4.17157ZM21.25 13C21.25 13.4142 21.5858 13.75 22 13.75C22.4142 13.75 22.75 13.4142 22.75 13H21.25Z"></path>
         </svg>
     </div>`;
+
 
 
         // Добавляем кнопку в верхнее меню
