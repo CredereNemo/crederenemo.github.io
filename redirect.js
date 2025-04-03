@@ -8,9 +8,9 @@
 
     function startRedirectButton() {
         $('#REDIRECT').remove();
-        
         var servers = Lampa.Storage.get('location_servers') || [];
-        if (!servers.length) return; // Если серверов нет, не создаем кнопку
+        
+        if (!servers.length) return;
         
         var buttonHtml = '<div id="REDIRECT" class="head__action selector redirect-screen">' + icon_server_redirect + '</div>';
         
