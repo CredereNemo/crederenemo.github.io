@@ -2,95 +2,88 @@
     'use strict';
 
     Lampa.Platform.tv();
-
+    
     var server_protocol = location.protocol === "https:" ? 'https://' : 'http://';
     var servers = Lampa.Storage.get('server_list') || [];
-
-    function renderIcon() {
+    
+    function updateUI() {
         $('#REDIRECT').remove();
         if (servers.length > 0) {
-            var domainSVG = '<svg width="256px" height="256px" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path d="M13 21.75C13.4142 21.75 13.75 21.4142 13.75 21C13.75 20.5858 13.4142 20.25 13 20.25V21.75ZM3.17157 19.8284L3.7019 19.2981H3.7019L3.17157 19.8284ZM20.8284 4.17157L20.2981 4.7019V4.7019L20.8284 4.17157ZM21.25 13C21.25 13.4142 21.5858 13.75 22 13.75C22.4142 13.75 22.75 13.4142 22.75 13H21.25Z" fill="currentColor"></path></svg>';
+            var domainSVG = '<svg>...</svg>'; // Здесь ваш SVG-код
             var domainBUTT = '<div id="REDIRECT" class="head__action selector redirect-screen">' + domainSVG + '</div>';
             $('#app > div.head > div > div.head__actions').append(domainBUTT);
             $('#REDIRECT').insertAfter('div[class="head__action selector open--settings"]');
-            $('#REDIRECT').on('hover:enter', function() {
+            
+            $('#REDIRECT').on('hover:enter hover:click hover:touch', function() {
                 if (servers.length === 1) {
-                    window.location.href = server_protocol + servers[0].address;
+                    window.location.href = server_protocol + servers[0].url;
                 } else {
-                    showServerMenu();
+                    showServerSelection();
                 }
             });
         }
     }
-
-    function showServerMenu() {
+    
+    function showServerSelection() {
         var list = [];
-        servers.forEach(function(server, index) {
+        servers.forEach((server, index) => {
             list.push({
-                title: server.name,
-                subtitle: server.address,
-                onEnter: function() {
-                    window.location.href = server_protocol + server.address;
+                title: server.name + ' (' + server.url + ')',
+                onSelect: function() {
+                    window.location.href = server_protocol + server.url;
                 }
             });
         });
         Lampa.Select.show({
-            title: 'Выбор сервера',
+            title: 'Выберите сервер',
             items: list,
             onBack: function() {
                 Lampa.Controller.toggle('content');
             }
         });
     }
-
+    
+    function addServer(name, url) {
+        if (!name || !url) return;
+        servers.push({ name: name, url: url });
+        Lampa.Storage.set('server_list', servers);
+        updateUI();
+    }
+    
     Lampa.SettingsApi.addComponent({
         component: 'location_redirect',
-        name: 'Управление серверами',
-        icon: ''
+        name: 'Смена сервера',
+        icon: '<svg>...</svg>' // Ваш SVG
     });
-
+    
     Lampa.SettingsApi.addParam({
         component: 'location_redirect',
         param: {
-            name: 'server_list',
+            name: 'add_server',
             type: 'button',
             values: '',
-            default: ''
+            default: '',
         },
         field: {
             name: 'Добавить сервер',
-            description: 'Управление списком серверов'
+            description: 'Введите название и URL сервера'
         },
         onChange: function() {
-            Lampa.Input.show({
+            Lampa.Input.open({
                 title: 'Добавить сервер',
-                placeholder: 'Введите имя сервера',
+                placeholder: 'Название',
                 onEnter: function(name) {
-                    Lampa.Input.show({
-                        title: 'Введите адрес сервера',
-                        placeholder: 'Например: lampa.surge.sh',
-                        onEnter: function(address) {
-                            servers.push({ name: name, address: address });
-                            Lampa.Storage.set('server_list', servers);
-                            renderIcon();
+                    Lampa.Input.open({
+                        title: 'Введите URL',
+                        placeholder: 'example.com',
+                        onEnter: function(url) {
+                            addServer(name, url);
                         }
                     });
                 }
             });
         }
     });
-
-    if (Lampa.Storage.field('const_redirect') == true && servers.length > 0) {
-        window.location.href = server_protocol + servers[0].address;
-    }
-
-    if (window.appready) renderIcon();
-    else {
-        Lampa.Listener.follow('app', function(e) {
-            if (e.type == 'ready') {
-                renderIcon();
-            }
-        });
-    }
-
+    
+    updateUI();
 })();
