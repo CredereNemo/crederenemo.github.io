@@ -2,90 +2,74 @@
     'use strict';
 
     Lampa.Platform.tv();
-    
+
     var server_protocol = location.protocol === "https:" ? 'https://' : 'http://';
-    var icon_server_redirect = '<svg width="24px" height="24px" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg"> <path d="M13 21.75C13.4142 21.75 13.75 21.4142 13.75 21C13.75 20.5858 13.4142 20.25 13 20.25V21.75ZM3.17157 19.8284L3.7019 19.2981H3.7019L3.17157 19.8284ZM20.8284 4.17157L20.2981 4.7019V4.7019L20.8284 4.17157ZM21.25 13C21.25 13.4142 21.5858 13.75 22 13.75C22.4142 13.75 22.75 13.4142 22.75 13H21.25ZM10 3.75H14V2.25H10V3.75Z" fill="currentColor"></path> </svg>';
-    
-    function loadServers() {
-        return JSON.parse(Lampa.Storage.get('location_servers') || '[]');
-    }
+    var servers = Lampa.Storage.get('servers') || [];
 
-    function saveServers(servers) {
-        Lampa.Storage.set('location_servers', JSON.stringify(servers));
-    }
-
-    function startMe() {
+    function updateIcon() {
         $('#REDIRECT').remove();
-        var servers = loadServers();
         if (servers.length === 0) return;
-        
+
+        var icon_server_redirect = '<svg width="256px" height="256px" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">...</svg>';
         var domainBUTT = '<div id="REDIRECT" class="head__action selector redirect-screen">' + icon_server_redirect + '</div>';
         $('#app > div.head > div > div.head__actions').append(domainBUTT);
         $('#REDIRECT').insertAfter('div[class="head__action selector open--settings"]');
-        
+
         $('#REDIRECT').on('hover:enter hover:click hover:touch', function() {
-            if (servers.length === 1) {
-                window.location.href = server_protocol + servers[0].url;
+            if (servers.length > 1) {
+                showServerList();
             } else {
-                showServerMenu(servers);
+                window.location.href = server_protocol + servers[0].url;
             }
         });
     }
-    
-    function showServerMenu(servers) {
-        var list = [];
-        servers.forEach(function(server, index) {
-            list.push({
-                title: server.name,
-                subtitle: server.url,
-                onClick: function() {
-                    window.location.href = server_protocol + server.url;
-                }
-            });
-        });
+
+    function showServerList() {
+        var list = Lampa.Storage.get('servers') || [];
+        var items = list.map((server, index) => ({
+            title: server.name,
+            url: server.url,
+            index: index
+        }));
+
         Lampa.Select.show({
-            title: "Выберите сервер",
-            items: list,
-            onBack: function() {
-                Lampa.Controller.toggle("content");
+            title: 'Выберите сервер',
+            items: items,
+            onSelect: function(item) {
+                window.location.href = server_protocol + item.url;
             }
         });
     }
-    
+
     Lampa.SettingsApi.addComponent({
         component: 'location_redirect',
         name: 'Смена сервера',
-        icon: icon_server_redirect
+        icon: '<svg width="24px" height="24px" fill="currentColor">...</svg>'
     });
-    
+
     Lampa.SettingsApi.addParam({
         component: 'location_redirect',
         param: {
-            name: 'location_servers',
+            name: 'add_server',
             type: 'button',
-            values: '',
-            placeholder: 'Добавить сервер',
-            default: ''
+            values: 'Добавить сервер'
         },
         field: {
-            name: 'Список серверов',
-            description: 'Добавьте несколько серверов для переключения'
+            name: 'Добавить сервер',
+            description: 'Добавить новый сервер с именем и адресом'
         },
-        onClick: function() {
+        onChange: function() {
             Lampa.Modal.input({
-                title: 'Добавить сервер',
-                placeholder: 'Введите имя сервера',
-                onSelect: function(serverName) {
-                    if (!serverName) return;
+                title: 'Введите имя сервера',
+                onBack: () => Lampa.SettingsApi.show('location_redirect'),
+                onSelect: function(name) {
                     Lampa.Modal.input({
                         title: 'Введите адрес сервера',
-                        placeholder: 'Например: lampa.surge.sh',
-                        onSelect: function(serverUrl) {
-                            if (!serverUrl) return;
-                            var servers = loadServers();
-                            servers.push({ name: serverName, url: serverUrl });
-                            saveServers(servers);
-                            startMe();
+                        onBack: () => Lampa.SettingsApi.show('location_redirect'),
+                        onSelect: function(url) {
+                            servers.push({ name, url });
+                            Lampa.Storage.set('servers', servers);
+                            updateIcon();
                         }
                     });
                 }
@@ -93,12 +77,5 @@
         }
     });
 
-    if (window.appready) startMe();
-    else {
-        Lampa.Listener.follow('app', function(e) {
-            if (e.type === 'ready') {
-                startMe();
-            }
-        });
-    }
+    updateIcon();
 })();
