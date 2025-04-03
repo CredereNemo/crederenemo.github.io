@@ -21,9 +21,10 @@
 
         // Создаем кнопку, добавляем класс для стилей иконки
         var buttonHtml = `
-            <div id="REDIRECT" class="head__action selector redirect-screen">
-                <div class="icon" style="width: 24px; height: 24px;">${icon_server_redirect}</div>
-            </div>`;
+    <div id="REDIRECT" class="head__action selector redirect-screen" style="width: 40px; height: 40px; display: flex; align-items: center; justify-content: center;">
+        <div class="icon" style="width: 24px; height: 24px;">${icon_server_redirect}</div>
+    </div>`;
+
 
         // Добавляем кнопку в верхнее меню
         $('.head__actions').append(buttonHtml);
