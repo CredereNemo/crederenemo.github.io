@@ -4,50 +4,57 @@
     Lampa.Platform.tv();
     
     var server_protocol = location.protocol === "https:" ? 'https://' : 'http://';
-    var icon_server_redirect = '<svg width="256px" height="256px" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">...</svg>';
-
+    var icon_server_redirect = '<svg width="24px" height="24px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M9 5L16 12L9 19" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+    
     function startMe() {
         $('#REDIRECT').remove();
+        var domainButton = `<div id="REDIRECT" class="head__action selector redirect-screen">${icon_server_redirect}</div>`;
         
-        if (!Lampa.Storage.get('location_server')) return;
-        
-        var domainBUTT = '<div id="REDIRECT" class="head__action selector redirect-screen">' + icon_server_redirect + '</div>';
-        $('#app > div.head > div > div.head__actions').append(domainBUTT);
-        $('#REDIRECT').insertAfter('div[class="head__action selector open--settings"]');
-        
+        $('.head__actions').append(domainButton);
+        $('#REDIRECT').insertAfter('.open--settings');
+
+        if (!Lampa.Storage.get('location_servers')) {
+            setTimeout(() => $('#REDIRECT').remove(), 10);
+        }
+
         $('#REDIRECT').on('hover:enter hover:click hover:touch', function() {
-            window.location.href = server_protocol + Lampa.Storage.get('location_server');
+            let servers = Lampa.Storage.get('location_servers') || [];
+            if (servers.length > 0) {
+                window.location.href = server_protocol + servers[0];
+            }
         });
     }
-    
+
     Lampa.SettingsApi.addComponent({
         component: 'location_redirect',
         name: 'Смена сервера',
         icon: icon_server_redirect
     });
-    
+
     Lampa.SettingsApi.addParam({
         component: 'location_redirect',
         param: {
-            name: 'location_server',
-            type: 'input', 
+            name: 'location_servers',
+            type: 'textarea',
             values: '',
-            placeholder: 'Например: lampa.surge.sh',
+            placeholder: 'Например: lampa.surge.sh\nexample.com',
             default: ''
         },
         field: {
-            name: 'Адрес сервера',
-            description: 'Нажмите для ввода, смену сервера можно будет сделать кнопкой в верхнем баре'
+            name: 'Адреса серверов',
+            description: 'Введите несколько серверов, разделяя их новой строкой.'
         },
-        onChange: function(value) {
-            if (!value) {
+        onChange: function (value) {
+            let servers = value.split('\n').map(s => s.trim()).filter(Boolean);
+            Lampa.Storage.set('location_servers', servers);
+            if (servers.length === 0) {
                 $('#REDIRECT').remove();
             } else {
                 startMe();
             }
-        }         
+        }
     });
-    
+
     Lampa.SettingsApi.addParam({
         component: 'location_redirect',
         param: {
@@ -57,14 +64,17 @@
         },
         field: {
             name: 'Постоянный редирект',
-            description: 'Внимание!!! Если вы включите этот параметр, вернуться на старый сервер сможете только сбросом плагинов или отключением этого плагина через CUB'
+            description: 'Если включено, переключиться обратно можно только через сброс настроек.'
         }
     });
     
     if (Lampa.Storage.field('const_redirect')) {
-        window.location.href = server_protocol + Lampa.Storage.get('location_server');
+        let servers = Lampa.Storage.get('location_servers') || [];
+        if (servers.length > 0) {
+            window.location.href = server_protocol + servers[0];
+        }
     }
-    
+
     if (window.appready) startMe();
     else {
         Lampa.Listener.follow('app', function(e) {
@@ -74,3 +84,4 @@
         });
     }
 })();
+
