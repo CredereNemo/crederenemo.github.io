@@ -1,60 +1,76 @@
-function addServer() {
-    Lampa.Input.edit({
-        value: '',
-        placeholder: 'Введите адрес сервера',
-        onSave: (value) => {
-            if (value.trim() !== '') {
-                let servers = Lampa.Storage.get('custom_servers', '[]');
-                servers = JSON.parse(servers);
-                servers.push(value.trim());
-                Lampa.Storage.set('custom_servers', JSON.stringify(servers));
-                Lampa.Noty.show('Сервер добавлен!');
+(function() {
+    'use strict';
+
+    Lampa.Platform.tv();
+    
+    var server_protocol = location.protocol === "https:" ? 'https://' : 'http://';
+    var icon_server_redirect = '<svg width="256px" height="256px" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">...</svg>';
+
+    function startMe() {
+        $('#REDIRECT').remove();
+        
+        if (!Lampa.Storage.get('location_server')) return;
+        
+        var domainBUTT = '<div id="REDIRECT" class="head__action selector redirect-screen">' + icon_server_redirect + '</div>';
+        $('#app > div.head > div > div.head__actions').append(domainBUTT);
+        $('#REDIRECT').insertAfter('div[class="head__action selector open--settings"]');
+        
+        $('#REDIRECT').on('hover:enter hover:click hover:touch', function() {
+            window.location.href = server_protocol + Lampa.Storage.get('location_server');
+        });
+    }
+    
+    Lampa.SettingsApi.addComponent({
+        component: 'location_redirect',
+        name: 'Смена сервера',
+        icon: icon_server_redirect
+    });
+    
+    Lampa.SettingsApi.addParam({
+        component: 'location_redirect',
+        param: {
+            name: 'location_server',
+            type: 'input', 
+            values: '',
+            placeholder: 'Например: lampa.surge.sh',
+            default: ''
+        },
+        field: {
+            name: 'Адрес сервера',
+            description: 'Нажмите для ввода, смену сервера можно будет сделать кнопкой в верхнем баре'
+        },
+        onChange: function(value) {
+            if (!value) {
+                $('#REDIRECT').remove();
             } else {
-                Lampa.Noty.show('Ошибка: пустое значение!');
+                startMe();
             }
+        }         
+    });
+    
+    Lampa.SettingsApi.addParam({
+        component: 'location_redirect',
+        param: {
+            name: 'const_redirect',
+            type: 'trigger',
+            default: false
         },
-        onCancel: () => {
-            Lampa.Noty.show('Добавление отменено.');
+        field: {
+            name: 'Постоянный редирект',
+            description: 'Внимание!!! Если вы включите этот параметр, вернуться на старый сервер сможете только сбросом плагинов или отключением этого плагина через CUB'
         }
     });
-}
-
-function showServerMenu() {
-    let servers = Lampa.Storage.get('custom_servers', '[]');
-    servers = JSON.parse(servers);
-
-    let list = servers.map((server, index) => ({
-        title: server,
-        onSelect: () => {
-            Lampa.Noty.show('Выбран сервер: ' + server);
-        },
-        onDelete: () => {
-            servers.splice(index, 1);
-            Lampa.Storage.set('custom_servers', JSON.stringify(servers));
-            Lampa.Noty.show('Сервер удалён!');
-            showServerMenu();
-        }
-    }));
-
-    if (list.length === 0) {
-        list.push({ title: 'Список пуст', disabled: true });
+    
+    if (Lampa.Storage.field('const_redirect')) {
+        window.location.href = server_protocol + Lampa.Storage.get('location_server');
     }
-
-    Lampa.Select.show({
-        title: 'Список серверов',
-        items: list,
-        onSelect: (item) => item.onSelect && item.onSelect(),
-        onBack: () => {
-            Lampa.Controller.toggle('content');
-        }
-    });
-}
-
-// Добавляем кнопку в меню
-Lampa.Settings.addParam({
-    title: 'Управление серверами',
-    onSelect: showServerMenu,
-    onBack: () => {
-        Lampa.Controller.toggle('content');
+    
+    if (window.appready) startMe();
+    else {
+        Lampa.Listener.follow('app', function(e) {
+            if (e.type === 'ready') {
+                startMe();
+            }
+        });
     }
-});
+})();
