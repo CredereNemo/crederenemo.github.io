@@ -4,9 +4,10 @@
 	Lampa.Platform.tv();
 
 	const server_protocol = location.protocol === "https:" ? 'https://' : 'http://';
-	const icon_server_redirect = `<svg width="256px" height="256px" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
-        <!-- SVG-код иконки -->
-    </svg>`;
+	const icon_server_redirect = `
+        <svg width="24px" height="24px" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+            <path d="M5 4h9a1 1 0 0 1 1 1v5h3V5a3 3 0 0 0-3-3H5a3 3 0 0 0-3 3v5h3V5a1 1 0 0 1 1-1zm14 16h-9a1 1 0 0 1-1-1v-5H6v5a3 3 0 0 0 3 3h9a3 3 0 0 0 3-3v-5h-3v5a1 1 0 0 1-1 1z"/>
+        </svg>`;
 
 	function startMe() {
 		if ($('#REDIRECT').length || !Lampa.Storage.get('location_server')) return;
