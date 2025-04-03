@@ -9,6 +9,9 @@
     function startRedirectButton() {
         $('#REDIRECT').remove();
         
+        var servers = Lampa.Storage.get('location_servers') || [];
+        if (!servers.length) return; // Если нет серверов, кнопку не показываем
+
         var buttonHtml = '<div id="REDIRECT" class="head__action selector redirect-screen">' + icon_server_redirect + '</div>';
         
         $('.head__actions').append(buttonHtml);
@@ -23,7 +26,7 @@
         var servers = Lampa.Storage.get('location_servers') || [];
         
         if (!servers.length) {
-            Lampa.SettingsApi.open('location_redirect'); // Открываем настройки ввода серверов
+            Lampa.Noty.show('Нет доступных серверов');
             return;
         }
         
