@@ -9,7 +9,10 @@
     function startRedirectButton() {
         $('#REDIRECT').remove();
         
-        var buttonHtml = '<div id="REDIRECT" class="head__action selector redirect-screen" style="display: flex; align-items: center; justify-content: center; width: 24px; height: 24px;">' + icon_server_redirect + '</div>';
+        var servers = Lampa.Storage.get('location_servers') || [];
+        if (!servers.length) return; // Если серверов нет, не создаем кнопку
+        
+        var buttonHtml = '<div id="REDIRECT" class="head__action selector redirect-screen">' + icon_server_redirect + '</div>';
         
         $('.head__actions').append(buttonHtml);
         $('#REDIRECT').insertAfter('div[class="head__action selector open--settings"]');
