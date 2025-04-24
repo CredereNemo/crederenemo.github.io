@@ -76,21 +76,25 @@
             description: 'Введите серверы через запятую для выбора'
         },
         onChange: function (value) {
-            // Форматируем адреса: обрезаем пробелы и делаем нижний регистр
-            var servers = value.split(',')
+            // Преобразуем строки в нижний регистр, убираем пробелы
+            var formatted = value
+                .split(',')
                 .map(s => s.trim().toLowerCase())
-                .filter(Boolean);
+                .filter(Boolean)
+                .join(',');
 
-            // Сохраняем в хранилище
-            Lampa.Storage.set('location_servers', servers);
+            // Сохраняем в Storage
+            Lampa.Storage.set('location_servers', formatted.split(','));
 
-            // Обновляем значение в настройке (чтобы не было заглавных букв в поле)
-            this.param.values = servers.join(',');
-            this.input.val(this.param.values);  // это обновит текстовое поле визуально
+            // Найдём input вручную (он один на странице при редактировании)
+            setTimeout(() => {
+                $('input[type="text"]').val(formatted); // Применим визуально
+            }, 100); // Даем чуть времени, чтобы input появился
 
             // Перезапускаем кнопку
             startRedirectButton();
         }
+
 
     });
 
