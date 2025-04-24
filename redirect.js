@@ -65,14 +65,22 @@
             name: 'Серверы',
             description: 'Введите серверы через запятую для выбора'
         },
-        onChange: function(value) {
-            // Приводим каждый адрес к нижнему регистру, удаляем пробелы и сохраняем
+        onChange: function (value) {
+            // Преобразуем каждый адрес в нижний регистр
             var servers = value.split(',')
-                               .map(s => s.trim().toLowerCase())
-                               .filter(Boolean);
+                .map(s => s.trim().toLowerCase())
+                .filter(Boolean);
+
+            // Обновляем хранилище
             Lampa.Storage.set('location_servers', servers);
+
+            // Обновляем поле ввода значением в нижнем регистре
+            this.input.val(servers.join(','));
+
+            // Обновляем кнопку
             startRedirectButton();
         }
+
     });
     
     if (window.appready) startRedirectButton();
