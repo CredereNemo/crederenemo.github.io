@@ -75,15 +75,19 @@
             name: 'Серверы',
             description: 'Введите серверы через запятую для выбора'
         },
-        onChange: function(value) {
-            // Приводим каждый адрес к нижнему регистру, удаляем пробелы и сохраняем
+        onChange: function (value) {
+            // Преобразуем введённые значения в нижний регистр, обрезаем пробелы
             var servers = value.split(',')
-                               .map(s => s.trim().toLowerCase())
-                               .filter(Boolean);
+                .map(s => s.trim().toLowerCase())
+                .filter(Boolean);
 
+            // Сохраняем в хранилище
             Lampa.Storage.set('location_servers', servers);
-            startRedirectButton(); // Обновляем кнопку
+
+            // Перезапускаем кнопку
+            startRedirectButton();
         }
+
     });
 
     // Ждём готовности приложения и запускаем добавление кнопки
