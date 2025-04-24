@@ -65,8 +65,11 @@
             name: 'Серверы',
             description: 'Введите серверы через запятую для выбора'
         },
-        onChange: function (value) {
-            var servers = value.split(',').map(s => s.trim()).filter(Boolean);
+        onChange: function(value) {
+            // Приводим каждый адрес к нижнему регистру, удаляем пробелы и сохраняем
+            var servers = value.split(',')
+                               .map(s => s.trim().toLowerCase())
+                               .filter(Boolean);
             Lampa.Storage.set('location_servers', servers);
             startRedirectButton();
         }
