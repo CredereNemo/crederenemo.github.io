@@ -1,19 +1,25 @@
 (function() {
     'use strict';
 
+    // Устанавливаем режим для телевизионной платформы
     Lampa.Platform.tv();
-    
-    var server_protocol = location.protocol === "https:" ? 'https://' : 'http://';
-    var icon_server_redirect = '<svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path d="M5 12l7-7v4h6v6h-6v4l-7-7zm14 7v-6h2v6h-2zm-2-8h2V5h-2v6z"/></svg>';
 
+    // Определяем протокол сервера (http или https)
+    var server_protocol = location.protocol === "https:" ? 'https://' : 'http://';
+
+    // SVG-иконка переключения сервера (стрелки)
+    var icon_server_redirect = `
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+            <path d="M7 8l-4 4 4 4v-3h9v-2H7V8zm10-4v3H8v2h9v3l4-4-4-4z"/>
+        </svg>`;
+
+    // Создаёт кнопку в верхнем меню, если есть сервера
     function startRedirectButton() {
-        $('#REDIRECT').remove();
+        $('#REDIRECT').remove(); // Удаляем предыдущую кнопку
         var servers = Lampa.Storage.get('location_servers') || [];
-        
         if (!servers.length) return;
-        
+
         var buttonHtml = '<div id="REDIRECT" class="head__action selector redirect-screen">' + icon_server_redirect + '</div>';
-        
         $('.head__actions').append(buttonHtml);
         $('#REDIRECT').insertAfter('div[class="head__action selector open--settings"]');
 
@@ -22,23 +28,25 @@
         });
     }
 
+    // Показывает список серверов на выбор
     function openServerSelection() {
         var servers = Lampa.Storage.get('location_servers') || [];
-        
+
         if (!servers.length) {
             Lampa.Noty.show('Нет доступных серверов');
             return;
         }
-        
+
         if (servers.length === 1) {
             window.location.href = server_protocol + servers[0];
             return;
         }
-        
-        var options = servers.map(server => ({ title: server, callback: () => {
-            window.location.href = server_protocol + server;
-        }}));
-        
+
+        var options = servers.map(server => ({
+            title: server,
+            callback: () => window.location.href = server_protocol + server
+        }));
+
         Lampa.Select.show({
             title: 'Выберите сервер',
             items: options,
@@ -46,12 +54,14 @@
         });
     }
 
+    // Добавляем пункт настроек для смены сервера
     Lampa.SettingsApi.addComponent({
         component: 'location_redirect',
         name: 'Смена сервера',
         icon: icon_server_redirect
     });
 
+    // Добавляем поле ввода адресов серверов
     Lampa.SettingsApi.addParam({
         component: 'location_redirect',
         param: {
@@ -65,24 +75,18 @@
             name: 'Серверы',
             description: 'Введите серверы через запятую для выбора'
         },
-        onChange: function (value) {
-            // Преобразуем каждый адрес в нижний регистр
+        onChange: function(value) {
+            // Приводим каждый адрес к нижнему регистру, удаляем пробелы и сохраняем
             var servers = value.split(',')
-                .map(s => s.trim().toLowerCase())
-                .filter(Boolean);
+                               .map(s => s.trim().toLowerCase())
+                               .filter(Boolean);
 
-            // Обновляем хранилище
             Lampa.Storage.set('location_servers', servers);
-
-            // Обновляем поле ввода значением в нижнем регистре
-            this.input.val(servers.join(','));
-
-            // Обновляем кнопку
-            startRedirectButton();
+            startRedirectButton(); // Обновляем кнопку
         }
-
     });
-    
+
+    // Ждём готовности приложения и запускаем добавление кнопки
     if (window.appready) startRedirectButton();
     else {
         Lampa.Listener.follow('app', function(e) {
