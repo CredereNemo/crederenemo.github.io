@@ -4,7 +4,7 @@
     Lampa.Platform.tv();
 
     var server_protocol = location.protocol === "https:" ? 'https://' : 'http://';
-    var icon_server_redirect = '<svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-right"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>';
+    var icon_server_redirect = '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-right"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>';
 
     function startRedirectButton() {
         $('#REDIRECT').remove();
@@ -12,7 +12,7 @@
         var servers = Lampa.Storage.get('location_servers') || [];
         if (!servers.length) return;
 
-        var buttonHtml = '<div id="REDIRECT" class="head__action selector redirect-screen" style="width:48px;height:48px;display:flex;align-items:center;justify-content:center">' + icon_server_redirect + '</div>';
+        var buttonHtml = '<div id="REDIRECT" class="head__action selector redirect-screen" style="width:24px;height:24px;display:flex;align-items:center;justify-content:center">' + icon_server_redirect + '</div>';
 
         $('.head__actions').append(buttonHtml);
         $('#REDIRECT').insertAfter('div[class="head__action selector open--settings"]');
