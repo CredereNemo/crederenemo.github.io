@@ -76,13 +76,17 @@
             description: 'Введите серверы через запятую для выбора'
         },
         onChange: function (value) {
-            // Преобразуем введённые значения в нижний регистр, обрезаем пробелы
+            // Форматируем адреса: обрезаем пробелы и делаем нижний регистр
             var servers = value.split(',')
                 .map(s => s.trim().toLowerCase())
                 .filter(Boolean);
 
             // Сохраняем в хранилище
             Lampa.Storage.set('location_servers', servers);
+
+            // Обновляем значение в настройке (чтобы не было заглавных букв в поле)
+            this.param.values = servers.join(',');
+            this.input.val(this.param.values);  // это обновит текстовое поле визуально
 
             // Перезапускаем кнопку
             startRedirectButton();
