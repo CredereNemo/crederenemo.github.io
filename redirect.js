@@ -5,9 +5,11 @@
     
     var server_protocol = location.protocol === "https:" ? 'https://' : 'http://';
     var icon_server_redirect = `
-    <svg xmlns="http://www.w3.org/2000/svg" fill="none" height="24" width="24" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-      <path stroke-linecap="round" stroke-linejoin="round" d="M17 8l4 4m0 0l-4 4m4-4H3"/>
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <line x1="5" y1="12" x2="19" y2="12"/>
+      <polyline points="12 5 19 12 12 19"/>
     </svg>`;
+
 
     // Функция для нормализации и исправления URL
     function sanitizeUrl(url) {
@@ -26,7 +28,12 @@
         if (!servers.length) return; // Если нет серверов, не создаем кнопку
         
         // Создаем кнопку с иконкой
-        var buttonHtml = '<div id="REDIRECT" class="head__action selector redirect-screen" style="width: 24px; height: 24px; display: flex; align-items: center; justify-content: center;">' + icon_server_redirect + '</div>';
+        var buttonHtml = `
+          <div id="REDIRECT" 
+               class="head__action selector redirect-screen" 
+               style="width: 40px; height: 40px; display: flex; align-items: center; justify-content: center;">
+            ${icon_server_redirect}
+          </div>`;
 
         
         // Добавляем кнопку в меню
