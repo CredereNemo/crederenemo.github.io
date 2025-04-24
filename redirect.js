@@ -22,62 +22,63 @@
         });
     }
 
-    function openServerSelection() {
-        var servers = Lampa.Storage.get('location_servers') || [];
+function sanitizeUrl(url) {
+    url = url.trim().toLowerCase();
+    if (!url.startsWith('http://') && !url.startsWith('https://')) {
+        url = server_protocol + url;
+    }
+    return url;
+}
 
-        if (!servers.length) {
-            Lampa.Noty.show('Нет доступных серверов');
-            return;
-        }
+function openServerSelection() {
+    var servers = (Lampa.Storage.get('location_servers') || []).map(sanitizeUrl);
 
-        if (servers.length === 1) {
-            window.location.href = server_protocol + servers[0];
-            return;
-        }
-
-        var options = servers.map(server => ({
-            title: server,
-            callback: () => {
-                window.location.href = server_protocol + server;
-            }
-        }));
-
-        Lampa.Select.show({
-            title: 'Выберите сервер',
-            items: options,
-            onSelect: (item) => item.callback()
-        });
+    if (!servers.length) {
+        Lampa.Noty.show('Нет доступных серверов');
+        return;
     }
 
-    Lampa.SettingsApi.addComponent({
-        component: 'location_redirect',
-        name: 'Смена сервера',
-        icon: icon_server_redirect
-    });
+    if (servers.length === 1) {
+        window.location.href = servers[0];
+        return;
+    }
 
-    Lampa.SettingsApi.addParam({
-        component: 'location_redirect',
-        param: {
-            name: 'location_servers',
-            type: 'input',
-            values: '',
-            placeholder: 'Введите адреса через запятую',
-            default: ''
-        },
-        field: {
-            name: 'Серверы',
-            description: 'Введите серверы через запятую для выбора'
-        },
-        onChange: function (value) {
-            var servers = value
-                .split(',')
-                .map(s => s.trim().toLowerCase())
-                .filter(Boolean);
-
-            Lampa.Storage.set('location_servers', servers);
-            startRedirectButton();
+    var options = servers.map(server => ({
+        title: server,
+        callback: () => {
+            window.location.href = server;
         }
+    }));
+
+    Lampa.Select.show({
+        title: 'Выберите сервер',
+        items: options,
+        onSelect: (item) => item.callback()
     });
+}
+
+Lampa.SettingsApi.addParam({
+    component: 'location_redirect',
+    param: {
+        name: 'location_servers',
+        type: 'input',
+        values: '',
+        placeholder: 'Введите адреса через запятую',
+        default: ''
+    },
+    field: {
+        name: 'Серверы',
+        description: 'Введите серверы через запятую для выбора'
+    },
+    onChange: function (value) {
+        var servers = value.split(',')
+            .map(s => s.trim().toLowerCase())
+            .filter(Boolean);
+
+        Lampa.Storage.set('location_servers', servers);
+        startRedirectButton();
+    }
+});
 
     if (window.appready) startRedirectButton();
     else {
