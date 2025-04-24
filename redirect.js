@@ -4,7 +4,10 @@
     Lampa.Platform.tv();
     
     var server_protocol = location.protocol === "https:" ? 'https://' : 'http://';
-    var icon_server_redirect = '<svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path d="M13 21.75C13.4142 21.75 13.75 21.4142 13.75 21C13.75 20.5858 13.4142 20.25 13 20.25V21.75ZM3.17157 19.8284L3.7019 19.2981H3.7019L3.17157 19.8284ZM20.8284 4.17157L20.2981 4.7019V4.7019L20.8284 4.17157ZM21.25 13C21.25 13.4142 21.5858 13.75 22 13.75C22.4142 13.75 22.75 13.4142 22.75 13H21.25Z"></path></svg>';
+    var icon_server_redirect = `
+    <svg xmlns="http://www.w3.org/2000/svg" fill="none" height="24" width="24" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+      <path stroke-linecap="round" stroke-linejoin="round" d="M17 8l4 4m0 0l-4 4m4-4H3"/>
+    </svg>`;
 
     // Функция для нормализации и исправления URL
     function sanitizeUrl(url) {
@@ -23,7 +26,8 @@
         if (!servers.length) return; // Если нет серверов, не создаем кнопку
         
         // Создаем кнопку с иконкой
-        var buttonHtml = '<div id="REDIRECT" class="head__action selector redirect-screen">' + icon_server_redirect + '</div>';
+        var buttonHtml = '<div id="REDIRECT" class="head__action selector redirect-screen" style="width: 24px; height: 24px; display: flex; align-items: center; justify-content: center;">' + icon_server_redirect + '</div>';
+
         
         // Добавляем кнопку в меню
         $('.head__actions').append(buttonHtml);
