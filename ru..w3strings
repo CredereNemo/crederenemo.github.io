@@ -1,0 +1,47 @@
+# Gwent Players Map 1.0.6 - texts to translate. Copy to <lang>.csv (br, de, fr, ru, ...)
+# and translate the part after the semicolon. Keep {role} as it is. Missing lines stay in English.
+panel_gwentplayersmap;Карта игроков в гвинт 1.0.6
+option_gwm_show_pins;Показывать метки гвинта
+option_gwm_show_defeated;Показывать уже обыгранных игроков
+option_gwm_icon_placement;Размещение значка
+preset_value_gwm_side;Рядом со значком торговца
+preset_value_gwm_replace;Заменить значок торговца
+preset_value_gwm_overlap;Поверх значка торговца
+option_gwm_debug;Отладочная информация
+map_category_gwent;Гвинт
+option_gwm_notify;Уведомлять, когда игрок отмечен как обыгранный
+gwm_label_gwent_player;Игрок в гвинт
+gwm_status_beaten;Уже обыгран.
+gwm_status_not_beaten;Ещё не обыгран.
+gwm_status_card_obtained;Карта получена.
+gwm_status_card_not_obtained;Карта ещё не получена.
+gwm_notify_beaten;Гвинт: {role} обыгран. Отмечен на карте.
+gwm_status_unavailable;Больше недоступен.
+gwm_note_may_leave;Может стать недоступным после определённого квеста.
+gwm_note_rescue_first;Сначала нужно спасти.
+gwm_role_alchemist;Алхимик
+gwm_role_armorer;Бронник
+gwm_role_barber;Цирюльник
+gwm_role_blacksmith;Кузнец
+gwm_role_bloody_baron;Кровавый Барон
+gwm_role_book_merchant;Торговец книгами
+gwm_role_brothel_madam;Хозяйка борделя
+gwm_role_butcher;Мясник
+gwm_role_crippled_kate;Хромоножка Катарина
+gwm_role_fergus_graem_armorer;Фергус Грем (бронник)
+gwm_role_fishmonger;Торговец рыбой
+gwm_role_gremist;Гремист
+gwm_role_herbalist;Травница
+gwm_role_innkeeper;Корчмарь
+gwm_role_innkeeper_inn_at_the_crossroads;Корчмарь, корчма «На распутье»
+gwm_role_loan_shark;Ростовщик
+gwm_role_merchant;Торговец
+gwm_role_nilfgaardian_officer;Нильфгаардский офицер
+gwm_role_olivier_kingfisher;Оливье (Зимородок)
+gwm_role_quartermaster;Квартирмейстер
+gwm_role_shopkeeper;Купец
+gwm_role_stjepan_alchemy_oxenfurt;Степан (корчма «Алхимия», Оксенфурт)
+gwm_role_tailor;Портной
+gwm_role_vimme_vivaldi;Вимме Вивальди
+gwm_role_wine_merchant;Торговец вином
+gwm_role_yoana_armorer_s_assistant;Иоанна (помощница бронника)
